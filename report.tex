@@ -1,0 +1,220 @@
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% BY MAHAMDI AMINE
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\documentclass[12pt]{report}
+\usepackage[T1]{fontenc}
+\usepackage{lmodern}
+\usepackage[a4paper]{geometry}
+\usepackage[myheadings]{fullpage}
+\usepackage{fancyhdr}
+\usepackage{lastpage}
+\usepackage{hyperref}
+\usepackage{graphicx, wrapfig, subcaption, setspace, booktabs}
+\usepackage[T1]{fontenc}
+\usepackage[font=small, labelfont=bf]{caption}
+\usepackage[protrusion=true, expansion=true]{microtype}
+\usepackage[french,english]{babel}
+\usepackage{sectsty}
+\usepackage{hyperref}
+\usepackage{listings}
+\hypersetup{
+    colorlinks,
+    citecolor=black,
+    filecolor=black,
+    linkcolor=black,
+    urlcolor=black
+}
+\usepackage{url, lipsum}
+\usepackage[utf8]{inputenc}
+\usepackage{indentfirst}
+\newcommand{\HRule}[1]{\rule{\linewidth}{#1}}
+\onehalfspacing
+\setcounter{tocdepth}{5}
+\setcounter{secnumdepth}{5}
+\pagestyle{fancy}
+\fancyhf{}
+\setlength\headheight{15pt}
+\fancyhead[L]{fm\char`_mahamdi@esi.dz    }
+\fancyhead[R]{fr\char`_boukabane@esi.dz}
+\fancyfoot[R]{Page \thepage\ sur \pageref{LastPage}}
+\usepackage{placeins}
+\begin{document}
+\renewcommand{\contentsname}{Table des Matières}
+\renewcommand{\listfigurename}{Table des Figures}
+\author{MAHAMDI Mohammed & BOUKABENE Randa }       
+\date{} 
+\title{  \textsc{ Implimenter une fonction d'estimation pour évaluer une position donnée dans le jeu d'échec.}
+		\\ [2.0cm]
+		\HRule{0.5pt} \\
+		\LARGE \textbf{\uppercase{TPGO:  Rapport de TP3. }}
+		\HRule{2pt} \\ [0.5cm]
+		\normalsize \today \vspace*{5\baselineskip}}
+\maketitle
+\tableofcontents
+\newpage
+\listoffigures 
+\newpage
+\sectionfont{\scshape}
+\newpage
+	\chapter{Introduction}
+	
+	Une heuristique est une technique qui améliore l'efficacité d'un
+	processus de recherche, en sacrifiant éventuellement la prétention
+	à être complet.\\
+	
+	Pour des problèmes d'optimisation où la recherche d'une solution
+	exacte est difficile, on peut se contenter d'une solution satisfaisante donnée par une heuristique	avec un coût plus faible.\\
+	
+	Dans le jeu d'échecs on sait que  $10^{120}$, est une estimation de la complexité du jeu , c'est-à-dire du nombre de parties différentes, ayant un sens échiquéen possibles.\\
+	
+	 À titre de comparaison,la complexité du jeu d'échecs dépasse le  nombre d'atomes dans l'univers observable qui est compris entre $4×10^{78}$ et $6×10^{79}$.\\
+	
+	Donc pour des raisons d'amélioration on utilise une fonction d'estimation pour évaluer une position donnée et réduire le nombre de possibilités. 
+	 
+	\newpage
+	\section{Terminologie du jeu d'échecs}
+	pour bien comprendre comment joeur une partie du jeu d'échecs , il faut avoir une idée générale sur les concepte suivants:
+	
+	\subsection{Les différentes cadences}
+	\begin{itemize}
+		\item	\textbf{Le Blitz :}\\
+	Les parties de blitz sont des parties rapides dont la cadence est inférieure à 15 minutes par joueur, et presque toujours, dans la pratique, de 5 minutes par joueur.
+	
+	\item \textbf{LE SEMI-RAPIDE :}\\
+	La cadence semi-rapide est une cadence intermédiaire. Les parties semi-rapides sont les parties qui créditent les joueurs de 15 minutes chacun au minimum, et 60 minutes chacun au maximum, ou l’équivalent en cadence « Fischer ».\\
+	
+	Dans ce TP on a supposé que la partie est une partie semi-rapide.
+	
+	\item \textbf{LA CADENCE LONGUE :}\\
+	Les parties longues ou « parties sérieuses » sont les parties qui créditent les joueurs de plus de 60 minutes chacun, ou l’équivalent en cadence « Fischer ».
+\end{itemize}
+	
+	\subsection{Le pion isolé}
+		Un pion isolé est un pion qui n'a plus de pion de son camp sur les colonnes adjacentes. 
+	\subsection{Les Pions doublés}
+		Aux échecs, des pions doublés désignent deux pions de la même couleur sur une même colonne.\\
+		
+		Cette disposition résulte obligatoirement d'une prise par un des pions.
+	\subsection{La colonne ouverte,semi-ouverte}
+		On dira qu'une colonne est ouverte si elle est dépourvue de pion.\\
+		une colonne est semi-ouverte sera une colonne où il n'y aura pas de pion pour l'un des deux camps..
+	\subsection{L’échec perpétuel}
+		L’échec perpétuel est une situation assez curieuse : le Roi d’un des deux adversaires ne peut pas se soustraire d’un échec. Ce joueur n’est pas échec et mat, il n’a pas perdu la partie. Pourtant, il ne peut pas développer son jeu et ne pourra pas non plus gagner. C’est donc match nul !
+		
+	\subsection{Le pion passé}
+		Aux échecs, un pion passé est un pion qui n'est plus gêné dans son avance vers la 8e rangée par un pion adverse, c'est-à-dire qu'il n'y a pas de pion adverse devant lui, ni sur la même colonne, ni sur une colonne adjacente. Les pions passés sont un avantage car seules les pièces adverses peuvent empêcher sa promotion.
+	\subsection{Le sacrifice positionnel}	
+		Le sacrifice positionnel est un
+		thème très fréquent dans la pratique. En
+		général on sacrifie une qualité pour créer des
+		faiblesses et/ou un désordre positionnel. A
+		priori, les effets de ce type de sacrifice ne
+		dépendent pas tellement de la nature de la
+		position : fermée, semi-ouverte ou ouverte. La
+		compensation sera d’autant plus grande que
+		les pièces manqueront de mobilité.
+	\subsection{Les phases d'une partie}
+		Une partie d'échecs se décompose en trois grandes phases : l'ouverture, le milieu de partie, la finale. 
+		\begin{itemize}
+			\item	\textbf{L'ouverture :}\\
+			Comme son nom l'indique, concerne le début de la partie. C'est-à-dire du premier coup des blancs jusqu'a la fin du développement des pièces et les premiers échanges de .
+			\item	\textbf{Le milieu de partie:}\\
+			Après l'ouverture, les pièces sont développées et la position équilibrée. Se pose alors la question cruciale et souvent déroutante pour le débutant ; QUE FAIRE ?. Le milieu de partie est le moment ou tout peut basculer d'un coté souvent suite a quelques combinaisons de bases qu'il faut connaître (fourchette, échec double, échec à la découverte, surcharge).
+			\item	\textbf{La finale:}\\ 
+			Après l'échange de la majorité des pièces il ne reste plus souvent sur l'échiquier que les deux rois, des pions et une ou deux pièces dans chaque camp. Une finale permet souvent de concrétiser l'avantage d'un pion supplémentaire. Si le camp possédant un pion de plus arrive à le mener jusqu'à la promotion il aura gagné ! (le pion se transformant en dame, l'avantage sera décisif).
+		\end{itemize}
+	\newpage
+	\chapter{Implémentation de la solution}
+	\subsection{Changer l'affichage de l'échiquier}
+Au lieu de mettre des lettres pour représenter les piéces et des signes (- et +)pour représenter les joueurs (blac ou noire) on a changer l'affichage d'échiquier avec des pièces réelles colorés.  \\ \\
+	Avant:
+		\begin{figure}[h!]
+		\centering
+		\includegraphics[scale=1, width=15cm]{./images/1.png}
+		\caption{L'ancien affichage d'échiquier.}	
+	\end{figure}
+	\FloatBarrier
+	\newpage
+	Aprés:
+		\begin{figure}[h!]
+		\centering
+		\includegraphics[scale=1, width=15cm]{./images/2.png}
+		\caption{Le nouveau affichage d'échiquier.}	
+	\end{figure}
+	\FloatBarrier
+	\subsection{Implimenter la fonctions d'évaluation}
+		On a implimenté les fonctions suivantes qui sont utiles lors l'estimation d'une position:
+				\lstset{language=C}
+				\lstset{label={lst:code_direct}}
+				\lstset{basicstyle=\footnotesize}
+				\begin{lstlisting}
+int Calculer_avantage_pendule(int Cadence);
+				\end{lstlisting}
+				\textbf{ Cette fonction retourne l'avantage pendule d'une cadence donnée.}
+ 	     	 \lstset{language=C}
+   		   	 \lstset{label={lst:code_direct}}
+			 \lstset{basicstyle=\footnotesize}
+			 \begin{lstlisting}
+int nbrPieces(struct config board, bool type);
+			 \end{lstlisting}
+			 \textbf{Cette fonction retourne le nombre de pieces pour les blanc si type est à vrai, sinon elle retourne le nombre des pieces des noires.}  
+\\\\	\textbf{les éléments prise en considération dans la fonction estim():}
+pour évaluer une position donnée on parcoure toutes les cases , en fonction du piéce trouvé dans la case ,on incrémente ou décrimente un variable qui aide a déterminer le resultat final.
+ 
+ les critaires d'évaluation qu'on choisi sont les suivants:
+ \newpage
+ \begin{itemize}
+ 	\item \textbf{le materiel :} 
+ 	\newline
+ 	\begin{itemize}
+ 		\item \textbf{ Pion }	 100 \\
+ \item \textbf{	Tour }    500 \\
+ \item \textbf{	Fou   }   300 \\
+ \item \textbf{	Cavalier} 300 (en final 320) \\
+ \item \textbf{	Dame	 }900 \\
+ \item \textbf{	Roi		 }4000 (en théorie c'est + $\infty$) \\
+ \end{itemize} 
+	\item \textbf{Les Pions doublés :} malus de -30.\\
+	\item \textbf{Le pion isolé :}     malus de -30.\\
+	\item \textbf{La tour dans une colonne ouverte :} bonus de +70\\
+	\item \textbf{La tour dans une colonne semi-ouverte :} bonus de +50\\	
+	\item \textbf{La dame dans une colonne ouverte :} bonus de +30\\
+	\item \textbf{La dame dans une colonne semi-ouverte :} bonus de +22\\	
+	\item \textbf{La paire de fous :} bonus de +50\\	
+	\item \textbf{La sécurité du roi :} bonus de +40\\	
+	\item \textbf{Le roque :} le roque est un grand avantage (il faut mettre le roi en securité),pour le grand roque on donne un bonus de 24, et pour le petit roque on donne un bonus de 25. \\	
+	\item \textbf{L'échec perpetual :} bonus de +40 (nul dans les mains )\\
+	\item \textbf{Le pion passé :} bonus de +400\\
+	\item \textbf{Des pions passés connectés :} bonus de +910 \\
+	\item \textbf{Avantage dans le temps :} {+10,+80,+150} dépend de la cadence\\
+	\item \textbf{L'ouverture :} \\
+	pour l'ouverture , il existe deux approches:
+	\begin{itemize}
+		\item utilisation d'un fichier d'ouvertures(openning book).
+		\item utilisation ddees vecteurs statiques (c'est l'aproche choisi).
+	\end{itemize}
+	On a choisi la deusieme approche , il existe des régles pour le plassement des pieces , pour chaque piece on a donnés un vecteur de 64 cases, chaque case contient le bonus ou le malus si la piece est plasé sur cette case.
+	\item \textbf{Le final :} c'est le méme comme l'ouverture(on a utilisé des vecteur statiques). \\  
+	\item \textbf{Le résultat final :} le résultat final dépend des critaire précedents ,pour garantie que l'évaluation compris entre [-100,100] on a divisé le résultat sur 88.
+	 \item \textbf{Remarque :} 
+	\par{}
+	Pour bien comprendre fonctionnement du programme  , le code source est bien documenté.
+	\par{}
+	\textbf{Code source du projet: } 
+	\newline
+	Voici  le lien vers le code source :
+	\newline
+	\href{https://github.com/MahamdiAmine/Articulation-points}{https://github.com/MahamdiAmine/Articulation-points/}
+\end{itemize}	
+\chapter{conclusion}
+Le jeu d’échecs appartient à un ensemble de jeux partageant des propriétés communes,
+appelés jeux combinatoires, Ce sont des jeux à information complète. \\
+
+Pour choisir son coup, chaque joueur dispose de toutes les informations concernant le jeu pour prendre sa décision.
+\\
+
+Dans ce TP on a utilisé une solution par expertise humaine,il existe aussi une autre solution : l'apprentissage automatique qui est très difficile à mettre en œuvre.
+\\
+
+
+\end{document}
