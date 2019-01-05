@@ -1,0 +1,18 @@
+TODO
+Two bishops advantage
+Interpolate between middle game and endgame scoring
+Bonus to pawn structures (the page only gives very simple PST values)
+Calibrate the values better with a statistical model
+Castled king
+Number of squares controlled
+Number of attacking squares near the enemy's king
+Asymmetric evaluation (Stockfish doesn't do that but some engines like Chess Genius does that)
+Pieces attacked by the king
+Rook behind a pawn
+Pawn on the check colour as bishop
+Mobility bonus
+Enemy checks
+Rook on semi- or open file
+Insufficient defended squares
+Passed pawn that is not blocked
+Candidate passed pawn (pawn majority)
