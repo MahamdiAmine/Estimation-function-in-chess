@@ -420,8 +420,12 @@ int estim(struct config board) /// La fonction d'evaluation de la configuration
     results = materiel + doubl * Pion_double + isole * Pion_isole + Echec_perpetual +
               rockValue + queenValue + bishopValue + matrice + Pion_passe_connecte +
               Pion_passe + Avantage_pendule + Roque;
+    //retourner une valeur dans ]-100 , +100[
+    int final_res = results / 40;
+    if (final_res > 100) return 100;
+    if (final_res < -100) return -100;
 
-    return results;
+    return final_res;
 };
 
 // estim
