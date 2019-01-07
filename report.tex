@@ -43,7 +43,7 @@
 \renewcommand{\listfigurename}{Table des Figures}
 \author{MAHAMDI Mohammed & BOUKABENE Randa }       
 \date{} 
-\title{  \textsc{ Implimenter une fonction d'estimation pour évaluer une position donnée dans le jeu d'échec.}
+\title{  \textsc{  une fonction d'estimation pour évaluer une position donnée dans le jeu d'échec.}
 		\\ [2.0cm]
 		\HRule{0.5pt} \\
 		\LARGE \textbf{\uppercase{TPGO:  Rapport de TP3. }}
@@ -161,7 +161,7 @@ int nbrPieces(struct config board, bool type);
 \\\\	\textbf{les éléments prise en considération dans la fonction estim():}
 pour évaluer une position donnée on parcoure toutes les cases , en fonction du piéce trouvé dans la case ,on incrémente ou décrimente un variable qui aide a déterminer le resultat final.
  
- les critaires d'évaluation qu'on choisi sont les suivants:
+ les critères d'évaluation qu'on choisi sont les suivants:
  \newpage
  \begin{itemize}
  	\item \textbf{le materiel :} 
@@ -205,7 +205,30 @@ pour évaluer une position donnée on parcoure toutes les cases , en fonction du
 	Voici  le lien vers le code source :
 	\newline
 	\href{https://github.com/MahamdiAmine/Estimation-function-in-chess}{https://github.com/MahamdiAmine/Estimation-function-in-chess}
-\end{itemize}	
+\end{itemize}
+\subsection{La fonction estim()}
+\lstset{language=C}
+\lstset{label={lst:code_direct}}
+\lstset{basicstyle=\footnotesize}
+\begin{lstlisting}
+int estim(struct config board) /// La fonction d'evaluation de la configuration
+{
+//Patie declaration : on declare tout les variables .
+	for (j = 0; j <= 7; j++) {
+		for (i = 0; i <= 7; i++) {
+			switch (board.mat[i][j]) {
+				case 'Piece':
+				 // pour chaque piece on ajoute sa valeur , et on teste les criteres //précédents (pion isolé,pion passé, tour dans une colonne ouverte...)
+				 //....   
+		}
+	}
+	results = materiel + doubl * Pion_double + isole * Pion_isole + Echec_perpetual +
+	rockValue + queenValue + bishopValue + matrice + Pion_passe_connecte +
+	Pion_passe + Avantage_pendule + Roque;
+return results;		
+}
+\end{lstlisting}
+	
 \chapter{conclusion}
 Le jeu d’échecs appartient à un ensemble de jeux partageant des propriétés communes,
 appelés jeux combinatoires, Ce sont des jeux à information complète. \\
