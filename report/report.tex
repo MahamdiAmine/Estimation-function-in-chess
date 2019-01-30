@@ -24,6 +24,8 @@
     linkcolor=black,
     urlcolor=black
 }
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
 \usepackage{url, lipsum}
 \usepackage[utf8]{inputenc}
 \usepackage{indentfirst}
@@ -130,7 +132,7 @@ Au lieu de mettre des lettres pour représenter les piéces et des signes (- et 
 	Avant:
 		\begin{figure}[h!]
 		\centering
-		\includegraphics[scale=1, width=15cm]{./images/1.png}
+		\includegraphics[scale=1, width=15cm]{../images/1.png}
 		\caption{L'ancien affichage d'échiquier.}	
 	\end{figure}
 	\FloatBarrier
@@ -138,11 +140,11 @@ Au lieu de mettre des lettres pour représenter les piéces et des signes (- et 
 	Aprés:
 		\begin{figure}[h!]
 		\centering
-		\includegraphics[scale=1, width=15cm]{./images/2.png}
+		\includegraphics[scale=1, width=15cm]{../images/2.png}
 		\caption{Le nouveau affichage d'échiquier.}	
 	\end{figure}
 	\FloatBarrier
-	\subsection{Implimenter la fonctions d'évaluation}
+	\subsection{Implimenter la fonction d'évaluation}
 		On a implimenté les fonctions suivantes qui sont utiles lors l'estimation d'une position:
 				\lstset{language=C}
 				\lstset{label={lst:code_direct}}
@@ -157,13 +159,22 @@ int Calculer_avantage_pendule(int Cadence);
 			 \begin{lstlisting}
 int nbrPieces(struct config board, bool type);
 			 \end{lstlisting}
-			 \textbf{Cette fonction retourne le nombre de pieces pour les blanc si type est à vrai, sinon elle retourne le nombre des pieces des noires.}  
-\\\\	\textbf{les éléments prise en considération dans la fonction estim():}
-pour évaluer une position donnée on parcoure toutes les cases , en fonction du piéce trouvé dans la case ,on incrémente ou décrimente un variable qui aide a déterminer le resultat final.
+			 \textbf{Cette fonction retourne le nombre de pieces pour les blanc si type est à vrai, sinon elle retourne le nombre des pieces des noires.} 
+			  \lstset{language=C}
+			 \lstset{label={lst:code_direct}}
+			 \lstset{basicstyle=\footnotesize}
+			 \begin{lstlisting}
+ int isMate(struct config board, color);
+			 \end{lstlisting}
+			 \textbf{Cette fonction retourne vrai si la configuration contient un mate pour le joueur qui a le couleur color(color=\{noires,blancs\}).} 
+\\\\	\textbf{Les éléments prise en considération dans la fonction estim():}
+\\Pour évaluer une position donnée on parcoure toutes les cases , en fonction du piéce trouvé dans la case ,on incrémente ou décrimente un variable qui aide a déterminer le resultat final.
  
  les critères d'évaluation qu'on choisi sont les suivants:
  \newpage
  \begin{itemize}
+ 	\item \textbf{le Mate :}
+ 	\newline S'il existe un mate dans la configuration ,on determine le gagnant (noires ou blanc ) et le jeu sera terminé .
  	\item \textbf{le materiel :} 
  	\newline
  	\begin{itemize}
@@ -214,11 +225,15 @@ pour évaluer une position donnée on parcoure toutes les cases , en fonction du
 int estim(struct config board) /// La fonction d'evaluation de la configuration
 {
 //Patie declaration : on declare tout les variables .
+	if(isMate(board,white)){results=100;exit}
+	if(isMate(board,black)){results=-100;exit}
 	for (j = 0; j <= 7; j++) {
 		for (i = 0; i <= 7; i++) {
 			switch (board.mat[i][j]) {
 				case 'Piece':
-				 // pour chaque piece on ajoute sa valeur , et on teste les criteres //précédents (pion isolé,pion passé, tour dans une colonne ouverte...)
+				 // pour chaque piece on ajoute sa valeur , et on teste \\
+				 //les criteres precedents (pion isole,pion passe ,\\
+				 // tour dans unecolonne ouverte...)\\
 				 //....   
 		}
 	}

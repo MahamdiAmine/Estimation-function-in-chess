@@ -3,10 +3,10 @@ cmake*/
 *.o
 .idea/*
 images/*
-report.aux
-report.lof
-report.log
-report.out
-report.toc
-report*.gz
-report/*.pdf
+report/report.aux
+report/report.lof
+report/report.log
+report/report.out
+report/report.toc
+report/report*.gz
+!report/*.pdf
