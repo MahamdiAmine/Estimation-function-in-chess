@@ -15,11 +15,12 @@
 #include <stdlib.h>
 #include <limits.h>  // pour INT_MAX
 #include "estimation.c"
+#include "init.c"
 #include "afficher.c"
+
 #define MAX +1    // Niveau Maximisant
 #define MIN -1  // Niveau Minimisant
 #define INFINI INT_MAX
-
 
 
 // vecteurs des déplacements par type de piece ...
@@ -806,45 +807,6 @@ int minmax_ab(struct config conf, int mode, int niv, int alpha, int beta) {
 } // minmax_ab
 
 
-/* Intialise la disposition des pieces dans la configuration initiale conf */
-void init(struct config *conf) {
-    int i, j;
-
-    for (i = 0; i < 8; i++)
-        for (j = 0; j < 8; j++)
-            conf->mat[i][j] = 0;    // Les cases vides sont initialisées avec 0
-
-    conf->mat[0][0] = 't';
-    conf->mat[0][1] = 'c';
-    conf->mat[0][2] = 'f';
-    conf->mat[0][3] = 'n';
-    conf->mat[0][4] = 'r';
-    conf->mat[0][5] = 'f';
-    conf->mat[0][6] = 'c';
-    conf->mat[0][7] = 't';
-
-    for (j = 0; j < 8; j++) {
-        conf->mat[1][j] = 'p';
-        conf->mat[6][j] = -'p';
-        conf->mat[7][j] = -conf->mat[0][j];
-    }
-
-    conf->xrB = 0;
-    conf->yrB = 4;
-    conf->xrN = 7;
-    conf->yrN = 4;
-
-    conf->roqueB = 'r';
-    conf->roqueN = 'r';
-
-    conf->val = 0;
-
-} // init
-
-
-
-
-
 
 /*******************************************/
 /*********** Programme princiapl ***********/
@@ -854,10 +816,10 @@ void init(struct config *conf) {
 
 int main(int argc, char *argv[]) {
     char sy, dy, ch[10];
-    int sx, dx, n, i, j, score, stop, cout, cout2, legal, hauteur, sauter;
+    int sx, dx, n, n1, n2, i, j, score, stop, cout, cout2, legal, hauteur, sauter;
     int cmin, cmax;
 
-    struct config T[100], conf, conf1;
+    struct config T[100], conf_temp1[100], conf_temp2[100], conf, conf1;
 
     if (argc == 1)
         hauteur = 4;  // par défaut on fixe la profondeur d'évaluation à 4
@@ -906,8 +868,10 @@ int main(int argc, char *argv[]) {
             printf("Estimation à %d niveaux = %d\n", sx, cout);
             sauter = 1;
         } else {  // deplacement normal (les autres coups) ...
+
             conf1.mat[dx - 1][dy - 'a'] = conf1.mat[sx - 1][sy - 'a'];
             conf1.mat[sx - 1][sy - 'a'] = 0;
+            printf("here\n");
             // vérifier possibilité de transformation d'un pion arrivé en fin d'échiquier ...
             if (dx == 8 && conf1.mat[dx - 1][dy - 'a'] == 'p') {
                 printf("Pion arrivé en ligne 8, transformer en (p/c/f/t/n) : ");
@@ -947,6 +911,8 @@ int main(int argc, char *argv[]) {
 
             if (legal && !feuille(conf1, &cout)) {
                 printf("OK\n\n");
+                printf("me n==%d\n", n);
+
                 i--;
                 copier(&T[i], &conf);
                 affich(conf);
@@ -955,6 +921,7 @@ int main(int argc, char *argv[]) {
                 printf("A mon tour maintenant ...\n");
 
                 generer_succ(conf, MIN, T, &n);
+                printf("engine n==%d\n", n);
 
                 score = +INFINI;
                 j = -1;
@@ -969,8 +936,15 @@ int main(int argc, char *argv[]) {
                 if (j != -1) { // jouer le coup et aller à la prochaine itération ...
                     copier(&T[j], &conf);
                     conf.val = score;
+                    generer_succ(conf, MAX, conf_temp1, &n1);
+                    //================fix the error ========
+                    if (n1 == 0) {
+                        printf(" *** J'ai gagné ☺ ☻ (¬‿¬) ***\n");
+                        stop = 1;
+                    }
+                    //======================================
                 } else { // S'il n'y a pas de successeur possible, l'ordinateur à perdu
-                    printf(" *** J'ai perdu ***\n");
+                    printf(" *** J'ai perdu ( ˇ෴ˇ )***\n");
                     stop = 1;
                 }
             } else if (!legal)

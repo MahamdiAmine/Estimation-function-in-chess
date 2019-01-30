@@ -282,25 +282,20 @@ int estim(struct config board) /// La fonction d'evaluation de la configuration
                         }
                         k++;
                     }
-                    if (i < 8 && j < 8 && j > 0) {
-                        if (board.mat[i + 1][j] == 'p' && board.mat[i + 1][j - 1] == 'p' &&
-                            board.mat[i + 1][j + 1] == 'p') {
-                            Securite_du_roi = +10;
-                        }
-                    }
                     if (nbrPieces(board, true) < 6 && nbrPieces(board, false) < 6 && board.mat[i][j] == 'r' &&
                         (board.mat[i + 2][j - 2] == 'r' || board.mat[i + 2][j] == 'r' || board.mat[i + 2][j + 2] == 'r'
                          || board.mat[i][j + 2] == 'r' || board.mat[i][j - 2] == 'r')) {
                         Echec_perpetual = +20;
                     }
-                    if (i == 0 && j == 1) {//le petit roque pour les blanc
-                        Roque = 25;
-                    } else if (i == 0 && j == 5) {//le grand roque pour les blanc
-                        Roque = 24;
-                    }
                     break;
                 case -'n':
                     materiel -= 1000;
+                    if (board.mat[i + 1][j] == 'r' || board.mat[i + 1][j + 1] == 'r' || board.mat[i][j + 1] == 'r'
+                        || board.mat[i - 1][j + 1] == 'r' || board.mat[i - 1][j] == 'r' ||
+                        board.mat[i - 1][j - 1] == 'r') {
+                        printf("here i==%d j==%d\n", i, j);
+
+                    }
                     k = 7;
                     while ((k >= 0) && (board.mat[k][j] != -'p')) {
                         if (((board.mat[k][j] == 0) || (board.mat[k][j] == -'n')) || (board.mat[k][j] < 0)) {
@@ -308,38 +303,50 @@ int estim(struct config board) /// La fonction d'evaluation de la configuration
                         }
                         k--;
                     }
-                    if (i > 0 && j < 8 && j > 0) {
-                        if (board.mat[i - 1][j] == 'p' && board.mat[i + 1][j - 1] == 'p' &&
-                            board.mat[i + 1][j + 1] == 'p') {
-                            Securite_du_roi = -10;
-                        }
-                    }
                     if (nbrPieces(board, true) < 6 && nbrPieces(board, false) < 6 && board.mat[i][j] == 'r' &&
                         (board.mat[i + 2][j - 2] == 'r' || board.mat[i + 2][j] == 'r' || board.mat[i + 2][j + 2] == 'r'
                          || board.mat[i][j + 2] == 'r' || board.mat[i][j - 2] == 'r')) {
                         Echec_perpetual = -20;
                     }
-                    if (i == 7 && j == 1) {//le petit roque pour les noires
-                        Roque = -25;
-                    } else if (i == 7 && j == 5) {//le grand roque pour les noires
-                        Roque = -24;
-                    }
                     break;
                 case 'r':
+                    materiel += 1500;
                     if (nbrPieces(board, true) > 8) {
                         matrice += KingO[j + i * 8];
                     }
                     if (nbrPieces(board, true) < 7) {
                         matrice += KingE[j + i * 8];
                     }
+                    if (i < 8 && j < 8 && j > 0) {
+                        if (board.mat[i + 1][j] == 'p' && board.mat[i + 1][j - 1] == 'p' &&
+                            board.mat[i + 1][j + 1] == 'p') {
+                            Securite_du_roi = +10;
+                        }
+                    }
+                    if (i == 0 && j == 1) {//le petit roque pour les blanc
+                        Roque = 25;
+                    } else if (i == 0 && j == 5) {//le grand roque pour les blanc
+                        Roque = 24;
+                    }
                     break;
-
                 case -'r':
+                    materiel -= 1500;
                     if (nbrPieces(board, true) > 8) {
                         matrice -= KingO[j + (7 - i) * 8];
                     }
                     if (nbrPieces(board, true) < 7) {
                         matrice -= KingE[j + (7 - i) * 8];
+                    }
+                    if (i > 0 && j < 8 && j > 0) {
+                        if (board.mat[i - 1][j] == 'p' && board.mat[i + 1][j - 1] == 'p' &&
+                            board.mat[i + 1][j + 1] == 'p') {
+                            Securite_du_roi = -10;
+                        }
+                    }
+                    if (i == 7 && j == 1) {//le petit roque pour les noires
+                        Roque = -25;
+                    } else if (i == 7 && j == 5) {//le grand roque pour les noires
+                        Roque = -24;
                     }
                     break;
             }
