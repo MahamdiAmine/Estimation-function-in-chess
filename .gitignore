@@ -9,4 +9,3 @@ report/report.log
 report/report.out
 report/report.toc
 report/report*.gz
-!report/*.pdf
